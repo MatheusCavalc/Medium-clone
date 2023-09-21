@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('title_preview');
             $table->string('content_preview');
-            $table->string('title');
-            $table->longText('content');
+            $table->json('content');
             $table->string('editor_name');
             $table->timestamps();
         });

@@ -15,7 +15,6 @@ class Story extends Model
         'image',
         'title_preview',
         'content_preview',
-        'title',
         'content',
         'user_id',
         'editor_name'
@@ -28,6 +27,7 @@ class Story extends Model
      */
     protected $casts = [
         'tags' => 'array',
+        'content' => 'array',
     ];
 
     public function author()

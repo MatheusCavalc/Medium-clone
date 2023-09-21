@@ -48,3 +48,5 @@ Route::post('/user/update', [ProfileController::class, 'updateInfos'])->middlewa
 Route::get('/{username}', [UserController::class, 'userPage'])->middleware('auth:sanctum');
 
 Route::get('image/{path}', [ImageController::class, 'getImage'])->where('path', '.*');
+
+Route::post('/upload-image', [StoryController::class, 'uploadImage']);

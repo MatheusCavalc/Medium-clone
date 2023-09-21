@@ -75,34 +75,37 @@ class StoryController extends Controller
      */
     public function store(Request $request)
     {
-        $slug = Str::slug($request->get('title'), '-');
+        $slug = Str::slug($request->get('title_preview'), '-');
         $request->request->add(['slug' => $slug]);
 
         $request->request->add(['user_id' => auth()->user()->id]);
         $request->request->add(['editor_name' => auth()->user()->name]);
 
-        $requestData = $request->all();
+        $requestData = $request->validate([
+            'slug' => 'required',
+            'tags' => 'required',
+            'image' => 'nullable',
+            'content' => 'required',
+            'title_preview' => 'required|max:100',
+            'content_preview' => 'required|max:140',
+            'user_id' => 'required|max:5000',
+            'editor_name' => 'required|max:25'
+        ]);
+
         $requestData['tags'] = explode(',', $request->get('tags'));
+        $requestData['content'] = json_decode($request->input('content'));
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . $slug . '.' . $image->getClientOriginalExtension();
+            $request->image->move(public_path('storage/image'), $filename);
+            $requestData['image'] = $filename;
+        }
 
         $response = [];
-        $validation = $this->validation($request->all());
-        if (!is_array($validation)) {
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $filename = time() . $slug . '.' . $image->getClientOriginalExtension();
-                $request->image->move(public_path('storage/image'), $filename);
-                $requestData['image'] = $filename;
-                Story::create($requestData);
-                array_push($response, ['status' => 'success']);
-                return response()->json($response, 200);
-            }
-
-            Story::create($requestData);
-            array_push($response, ['status' => 'success']);
-            return response()->json($response, 200);
-        } else {
-            return response()->json($validation, 400);
-        }
+        Story::create($requestData);
+        array_push($response, ['status' => 'success']);
+        return response()->json($response, 200);
     }
 
     /**
@@ -210,11 +213,11 @@ class StoryController extends Controller
     public function destroy(Story $story)
     {
         if ($story->user_id === auth()->user()->id) {
-        $story->delete();
-        return response()->json([
-            'status' => 'success',
-            "message" => "Story deleted"
-        ], 202);
+            $story->delete();
+            return response()->json([
+                'status' => 'success',
+                "message" => "Story deleted"
+            ], 202);
         }
     }
 
@@ -228,7 +231,7 @@ class StoryController extends Controller
         $attributes = [
             'slug' => 'slug',
             'tags' => 'tags',
-            'title' => 'title',
+            'image' => 'image',
             'content' => 'content',
             'title_preview' => 'title_preview',
             'content_preview' => 'content_preview',
@@ -240,7 +243,7 @@ class StoryController extends Controller
             [
                 'slug' => 'required',
                 'tags' => 'required',
-                'title' => 'required|max:80',
+                'image' => 'nullable',
                 'content' => 'required',
                 'title_preview' => 'required|max:100',
                 'content_preview' => 'required|max:140',
@@ -258,5 +261,21 @@ class StoryController extends Controller
         } else {
             return true;
         }
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required'
+        ]);
+
+        $picName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('storage/image'), $picName);
+        return response()->json([
+            "success" => 1,
+            "file" => [
+                "url" => "http://localhost/storage/image/$picName"
+            ]
+        ]);
     }
 }
