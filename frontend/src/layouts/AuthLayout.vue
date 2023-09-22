@@ -12,11 +12,11 @@ const exit = () => {
         <div class="max-w-full flex flex-wrap items-center justify-between mx-5">
             <div class="flex items-center">
                 <router-link to="/">
-                    <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Flowbite Logo" />
+                    <p>Writer</p>
                 </router-link>
                 <input type="text" id="search-navbar"
                     class="block w-full p-2 pl-10 py-2.5 text-sm ml-5 text-gray-900 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Search Flowbite">
+                    placeholder="Search Writer">
             </div>
             <button data-collapse-toggle="navbar-default" type="button"
                 class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"

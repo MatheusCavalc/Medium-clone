@@ -1,16 +1,20 @@
 <script setup>
+import { ref } from 'vue';
 
+let menu = ref(false)
+
+const showMenu = () => {
+    menu.value = !menu.value
+}
 </script>
 
 <template>
-
-    <nav class="bg-yellow-400 border-black border-b px-2 sm:px-4 py-1 rounded dark:bg-gray-900">
-        <div class="max-w-full flex flex-wrap items-center justify-between mx-14">
+    <nav class="fixed top-0 left-0 z-20 w-full bg-yellow-400 border-black border-b px-2 sm:px-4 py-1 dark:bg-gray-900">
+        <div class="max-w-full flex flex-wrap items-center justify-between md:mx-14">
             <router-link to="/" class="flex items-center">
-                <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Flowbite Logo" />
-                <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+                <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Writer</span>
             </router-link>
-            <button data-collapse-toggle="navbar-default" type="button"
+            <button @click="showMenu" data-collapse-toggle="navbar-default" type="button"
                 class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                 aria-controls="navbar-default" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
@@ -21,7 +25,7 @@
                         clip-rule="evenodd"></path>
                 </svg>
             </button>
-            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+            <div :class="{ 'md:block': menu, 'hidden md:block': !menu }" class="md:block md:w-auto" id="navbar-default">
                 <ul
                     class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-yellow-400 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0">
                     <li>
@@ -56,6 +60,8 @@
     </nav>
 
     <div>
+        <div class="fixed top-0 left-0 hidden w-full h-4/5 bg-yellow-400 lg:block" aria-hidden="true"></div>
+
         <slot />
     </div>
 

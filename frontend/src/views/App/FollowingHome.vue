@@ -89,8 +89,8 @@ onMounted(() => {
                                         <div class="flex-initial">
                                             <div class="container-home">
                                                 <div class="my-2 session-title">
-                                                    <h1 class="font-extrabold tracking-tighter">{{ story.title_preview }}
-                                                    </h1>
+                                                    <p class="font-extrabold tracking-tighter">{{ story.title_preview }}
+                                                    </p>
                                                 </div>
 
                                                 <div class="my-2 session-content">

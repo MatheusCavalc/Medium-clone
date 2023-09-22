@@ -14,7 +14,7 @@ const exit = () => {
         <div class="max-w-full flex flex-wrap items-center justify-between mx-44">
             <div class="flex items-center">
                 <router-link to="/">
-                    <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 mr-3 sm:h-9" alt="Flowbite Logo" />
+                    <p>Writer</p>
                 </router-link>
                 <p>Draft in {{ userName }}</p>
             </div>
