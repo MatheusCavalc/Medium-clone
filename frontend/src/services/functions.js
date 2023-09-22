@@ -38,19 +38,20 @@ export function logout() {
 
 export function postStory(parameters) {
     axios.post(url + 'stories', parameters).then((response) => {
-        let status = response.data[0]['status'];
-        if (status === 'success') {
+        if (response.data.message === 'Story Created') {
             router.push('/')
-        } else {
+        } else if (response.data.message === 'Something Error') {
+            alert('Please Rewrite the Product');
+        }
+    }).catch(error => {
+        if (error.response.data.message == 'Data Invalid') {
             let list = '';
-            let errors = response.data[1]['errors'];
+            let errors = error.response.data.errors
             Object.keys(errors).forEach(
-                key => list += errors[key][0] + '.'
+                key => list += errors[key][0] + '\n'
             );
             alert(list, 'error');
         }
-    }).catch(error => {
-        console.log(error)
     });
 }
 

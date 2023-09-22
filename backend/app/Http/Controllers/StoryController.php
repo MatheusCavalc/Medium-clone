@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Request as FacadesRequest;
 use App\Models\Story;
 use App\Models\Follower;
 use App\Models\User;
+use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class StoryController extends Controller
 {
+    use HttpResponses;
     /**
      * Display a listing of the resource.
      *
@@ -81,7 +83,7 @@ class StoryController extends Controller
         $request->request->add(['user_id' => auth()->user()->id]);
         $request->request->add(['editor_name' => auth()->user()->name]);
 
-        $requestData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'slug' => 'required',
             'tags' => 'required',
             'image' => 'nullable',
@@ -92,20 +94,26 @@ class StoryController extends Controller
             'editor_name' => 'required|max:25'
         ]);
 
-        $requestData['tags'] = explode(',', $request->get('tags'));
-        $requestData['content'] = json_decode($request->input('content'));
+        if ($validator->fails()) return $this->error('Data Invalid', 422, $validator->errors());
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $filename = time() . $slug . '.' . $image->getClientOriginalExtension();
-            $request->image->move(public_path('storage/image'), $filename);
-            $requestData['image'] = $filename;
+        if ($validator->passes()) {
+            $validatedData = $validator->validated();
+            $validatedData['tags'] = explode(',', $request->get('tags'));
+            $validatedData['content'] = json_decode($request->input('content'));
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = time() . $slug . '.' . $image->getClientOriginalExtension();
+                $request->image->move(public_path('storage/image'), $filename);
+                $validatedData['image'] = $filename;
+            }
+
+            $story = Story::create($validatedData);
+
+            if ($story) return $this->response('Story Created', 200, $story);
         }
 
-        $response = [];
-        Story::create($requestData);
-        array_push($response, ['status' => 'success']);
-        return response()->json($response, 200);
+        return $this->error('Something Error', 400);
     }
 
     /**
