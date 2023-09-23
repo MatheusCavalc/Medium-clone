@@ -28,6 +28,7 @@ const addTags = (tag) => {
 }
 
 function submit() {
+    isButtonDisabled.value = true
     editor.save().then((outputData) => {
         let formData = new FormData();
         formData.append('tags', tags.value);
@@ -37,6 +38,7 @@ function submit() {
         formData.append('content_preview', content_preview);
         postStory(formData)
     }).catch((error) => {
+        isButtonDisabled.value = false
         console.log('Saving failed: ', error)
     });
 }

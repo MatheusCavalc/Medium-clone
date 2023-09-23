@@ -7,7 +7,7 @@ let url = process.env.VUE_APP_API_URL_BASE
 export function register(parameters) {
     event.preventDefault()
     axios.post(url + 'auth/register', parameters).then(() => {
-        window.location.replace('/login');
+        router.push('/login')
     }).catch(error => {
         console.log(error)
     });
@@ -57,16 +57,20 @@ export function postStory(parameters) {
 
 export function putStory(id, parameters) {
     axios.put(url + 'stories/' + id, parameters).then((response) => {
-        console.log(response)
-        let status = response.data.status
-        let url = response.data.redirect
-        if (status === 'success') {
-            window.location.replace('/story/' + url);
-        } else {
-            router.push('/profile')
+        if (response.data.message === 'Story Updated') {
+            router.push('/story/' + response.data.data.slug + '/' + response.data.data.id)
+        } else if (response.data.message === 'Something Error') {
+            alert('Please Rewrite the Product');
         }
     }).catch(error => {
-        console.log(error)
+        if (error.response.data.message == 'Data Invalid') {
+            let list = '';
+            let errors = error.response.data.errors
+            Object.keys(errors).forEach(
+                key => list += errors[key][0] + '\n'
+            );
+            alert(list, 'error');
+        }
     });
 }
 

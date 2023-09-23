@@ -12,7 +12,7 @@ const exit = () => {
 <template>
     <nav class="bg-white px-1 sm:px-1">
         <div class="max-w-full flex flex-wrap items-center justify-between mx-44">
-            <div class="flex items-center">
+            <div class="flex items-center gap-1">
                 <router-link to="/">
                     <p>Writer</p>
                 </router-link>

@@ -177,39 +177,22 @@ class StoryController extends Controller
      */
     public function update(Request $request, Story $story)
     {
-        $story->update([
-            'title' => $request->get('title'),
-            'content' => $request->get('content'),
+        $validator = Validator::make($request->all(), [
+            'content' => 'required',
         ]);
 
-        if ($story) {
-            return response()->json([
-                'status' => 'success',
-                'redirect' => $story->slug . '/' . $story->id
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'error'
+        if ($validator->fails()) return $this->error('Data Invalid', 422, $validator->errors());
+
+        if ($validator->passes()) {
+            $validatedData = $validator->validated();
+            $story->update([
+                'content' => json_decode($validatedData['content']),
             ]);
+
+            if ($story) return $this->response('Story Updated', 200, $story);
         }
 
-        /*
-        $response = [];
-        $validation = $this->validation($request->all());
-        if (!is_array($validation)) {
-            $product = Product::find($id);
-            if ($product) {
-                $product->fill($request->all())->save();
-                array_push($response, ['status' => 'success']);
-            } else {
-                array_push($response, ['status' => 'error']);
-                array_push($response, ['errors' => ['id' => ['Products not found']]]);
-            }
-            return response()->json($response);
-        } else {
-            return response()->json($validation);
-        }
-        */
+        return $this->error('Something Error', 400);
     }
 
     /**
@@ -226,48 +209,6 @@ class StoryController extends Controller
                 'status' => 'success',
                 "message" => "Story deleted"
             ], 202);
-        }
-    }
-
-    public function validation($params)
-    {
-        $response = [];
-        $messages = [
-            'max' => 'The :attribute field must NOT have more than :max characters',
-            'required' => 'The :attribute field must NOT be empty'
-        ];
-        $attributes = [
-            'slug' => 'slug',
-            'tags' => 'tags',
-            'image' => 'image',
-            'content' => 'content',
-            'title_preview' => 'title_preview',
-            'content_preview' => 'content_preview',
-            'user_id' => 'user_id',
-            'editor_name' => 'editor_name',
-        ];
-        $validation = Validator::make(
-            $params,
-            [
-                'slug' => 'required',
-                'tags' => 'required',
-                'image' => 'nullable',
-                'content' => 'required',
-                'title_preview' => 'required|max:100',
-                'content_preview' => 'required|max:140',
-                'user_id' => 'required|max:5000',
-                'editor_name' => 'required|max:25'
-            ],
-            $messages,
-            $attributes
-        );
-
-        if ($validation->fails()) {
-            array_push($response, ['status' => 'error']);
-            array_push($response, ['errors' => $validation->errors()]);
-            return $response;
-        } else {
-            return true;
         }
     }
 
