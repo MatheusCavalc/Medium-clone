@@ -6,7 +6,7 @@ O projeto se utiliza de contêineres Docker, através do pacote Laravel Sail par
 
 - Faça um clone do projeto para sua máquina local
 ```shell
-git clone https://github.com/MatheusCavalc/ApiLaravel-VueConsume
+git clone https://github.com/MatheusCavalc/Medium-clone
 ```
 - Navegue até o diretório raiz do projeto clonado e execute o comando abaixo para abrir a pasta frontend:
 ```shell
